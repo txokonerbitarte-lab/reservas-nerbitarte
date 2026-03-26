@@ -1,0 +1,877 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<style>
+
+/* LOGIN MEJORADO */
+
+#login-container{
+  width:100%;
+  max-width:100%;
+  margin:0;
+  padding:25px;
+  text-align:center;
+  background:white;
+  border-radius:18px;
+  box-shadow:0 12px 30px rgba(0,0,0,0.1);
+}
+
+body{
+  padding:15px;
+}
+
+.logo-login{
+  width:180px;
+  margin-bottom:25px;
+  border-radius:16px;
+  background:white;
+  padding:12px;
+  box-shadow:0 6px 20px rgba(0,0,0,0.15);
+}
+
+#login-container h2{
+  margin-bottom:20px;
+}
+
+#login-container input{
+  width:100%;
+  max-width:320px;
+  margin:10px auto;
+  display:block;
+}
+
+#login-container button{
+  background:#7b1e2b;
+  color:white;
+
+  width:100%;
+  max-width:320px;
+
+  margin:15px auto 0 auto;
+  display:block;
+
+  padding:14px;
+  border-radius:12px;
+  font-weight:600;
+
+  box-shadow:0 6px 12px rgba(0,0,0,0.15);
+  transition:all 0.15s ease;
+}
+
+#login-container button:hover{
+  filter:brightness(1.05);
+}
+
+#login-container button:active{
+  transform:translateY(2px);
+  box-shadow:0 3px 6px rgba(0,0,0,0.2);
+}
+
+*{box-sizing:border-box;}
+
+body{
+  font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Helvetica Neue",Arial;
+  background:#f2f2f7;
+  margin:0;
+  color:#1c1c1e;
+}
+
+.layout{
+  display:flex;
+  width:100%;
+  max-width:100%;
+  margin:0;
+  padding:25px;
+  gap:35px;
+}
+
+.logoPanel{width:360px;text-align:center;}
+.mainPanel{flex:1;}
+
+.logo{
+  width:180px;
+  margin-bottom:20px;
+
+  border-radius:16px;
+  background:white;
+  padding:12px;
+
+  box-shadow:0 6px 20px rgba(0,0,0,0.15);
+}
+
+.card,.aforoBox,.reservasBox{
+  background:white;
+  padding:18px;
+  padding-bottom:15px; /* 👈 AÑADE ESTA LÍNEA */
+  border-radius:16px;
+  box-shadow:0 6px 18px rgba(0,0,0,0.08);
+  margin-bottom:16px;
+}
+
+/* TITULO */
+
+.tituloPrincipal{
+text-align:center;
+font-size:28px;
+font-weight:700;
+padding:14px;
+margin-bottom:20px;
+border-radius:10px;
+background:#b54b5d;
+color:white;
+box-shadow:0 4px 12px rgba(0,0,0,0.15);
+}
+
+/* TITULOS BLOQUES */
+
+.tituloBloque{
+font-weight:700;
+margin-bottom:14px;
+}
+
+/* FORMULARIO */
+
+label{
+font-weight:600;
+display:block;
+margin-top:12px;
+margin-bottom:6px;
+}
+
+input,select{
+width:100%;
+padding:12px;
+font-size:16px;
+border-radius:10px;
+border:1px solid #d1d1d6;
+margin-bottom:12px;
+}
+
+select:invalid{
+color:#9ca3af;
+}
+
+select option{
+color:#1c1c1e;
+}
+
+select option[value=""]{
+color:#9ca3af;
+}
+
+/* TURNOS */
+
+.infoTurno{
+padding:10px;
+border-radius:10px;
+margin-bottom:12px;
+font-weight:600;
+text-align:center;
+}
+
+.turnoComida{background:#fff7cc;}
+.turnoCena{background:#e6ecff;}
+
+/* BARRAS AFORO */
+
+.barraOcupacion{
+height:18px;
+border-radius:6px;
+overflow:hidden;
+margin-top:6px;
+background:#e5e7eb;
+}
+
+.barraInterna{
+height:100%;
+display:flex;
+align-items:center;
+justify-content:center;
+font-size:11px;
+font-weight:700;
+color:white;
+}
+
+/* RESERVAS */
+
+.reserva{
+background:#f2f2f7;
+padding:8px;
+border-radius:10px;
+margin-top:6px;
+font-size:13px;
+}
+
+.separadorTurno{
+margin-top:14px;
+font-weight:700;
+}
+
+/* BOTONES */
+
+button{
+width:100%;
+padding:14px;
+font-size:17px;
+border:none;
+border-radius:12px;
+cursor:pointer;
+font-weight:600;
+}
+
+.btnReservar{
+  background:linear-gradient(145deg,#6edc8c,#4caf6a);
+  color:white;
+
+  box-shadow:
+    0 6px 12px rgba(0,0,0,0.15),
+    inset 0 1px 0 rgba(255,255,255,0.3);
+
+  transform:translateY(0);
+  transition:all 0.15s ease;
+
+  font-weight:700;
+}
+
+.btnReservar:active{
+  transform:translateY(2px);
+
+  box-shadow:
+    0 3px 6px rgba(0,0,0,0.15),
+    inset 0 2px 4px rgba(0,0,0,0.2);
+}
+
+.btnReservar:hover{
+  filter:brightness(1.05);
+}
+
+.btnBloqueado{
+background:#999;
+color:white;
+cursor:not-allowed;
+}
+
+.btnNuevaReserva{
+background:#9a9a9a;
+color:white;
+}
+
+/* MENSAJES */
+
+.msgSistema{
+margin-top:12px;
+padding:12px;
+border-radius:10px;
+background:#e6f0ff;
+color:#0040aa;
+font-weight:700;
+text-align:center;
+}
+
+.msgError{
+margin-top:12px;
+padding:12px;
+border-radius:10px;
+background:#ffeaea;
+color:#b00000;
+font-weight:700;
+text-align:center;
+}
+
+html, body{
+  width:100%;
+  max-width:100%;
+}
+
+@media (max-width:600px){
+
+  body{
+  padding:0;
+  overflow-x:hidden; /* 👈 ESTA LÍNEA ES LA CLAVE */
+}
+
+  #login-container{
+    width:100%;
+    max-width:100%;
+    min-height:100vh;
+
+    border-radius:0;
+    box-shadow:none;
+
+    padding:25px 20px;
+
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+  }
+
+  .logo-login{
+    width:140px;
+  }
+
+  #login-container input{
+    font-size:16px;
+    padding:14px;
+  }
+
+  #login-container button{
+    font-size:16px;
+    padding:14px;
+  }
+  /* 👇 APP RESERVAS RESPONSIVE */
+
+ .layout{
+  display:flex !important;
+  flex-direction:column !important;
+
+  width:100% !important;
+  max-width:100% !important;
+
+  margin:0 !important;
+  padding:15px !important;
+
+  gap:15px !important;
+}
+
+  .logoPanel{
+    width:100% !important;
+    min-width:0 !important;
+    order:2;
+  }
+
+  .mainPanel{
+    width:100% !important;
+    min-width:0 !important;
+    order:1;
+  }
+
+  .logo{
+    width:140px;
+  }
+
+  .tituloPrincipal{
+    font-size:20px;
+    padding:12px;
+  }
+
+  .card, .aforoBox, .reservasBox{
+    padding:14px;
+    border-radius:12px;
+    box-shadow:none;
+  }
+
+  input, select{
+    font-size:16px;
+    padding:14px;
+  }
+
+  button{
+  font-size:16px;
+  padding:16px;
+  width:100%;
+}
+
+  .reserva{
+    font-size:15px;
+    padding:10px;
+  }
+
+  .card{
+     margin-bottom:20px;
+  }
+
+.container{
+  width:100%;
+  max-width:100%;
+}
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+  <div id="login-container">
+
+<img class="logo-login" src="https://lh3.googleusercontent.com/d/12S8qqOoaHjZ1WxB7FKRC1ivMxEiO8IrA" alt="Nerbitarte">
+
+<h2>Acceso socios Txoko Nerbitarte</h2>
+
+<input type="text" id="usuario" placeholder="Usuario">
+<input type="password" id="password" placeholder="Contraseña">
+
+<button onclick="login()">Entrar</button>
+
+<p id="error" style="color:red;margin-top:10px;"></p>
+
+</div>
+
+<div id="app-container" style="display:none;">
+
+<div class="layout">
+
+<div class="logoPanel">
+
+<img src="https://lh3.googleusercontent.com/d/12S8qqOoaHjZ1WxB7FKRC1ivMxEiO8IrA" class="logo">
+
+<div class="aforoBox">
+
+<div class="tituloBloque">👥 AFORO PREVISTO</div>
+
+<div id="aforoComida"></div>
+<div class="barraOcupacion"><div id="barraComida" class="barraInterna"></div></div>
+
+<div id="aforoCena" style="margin-top:14px"></div>
+<div class="barraOcupacion"><div id="barraCena" class="barraInterna"></div></div>
+
+</div>
+
+<div class="reservasBox">
+
+<div class="tituloBloque">Reservas del día</div>
+<div id="agenda"></div>
+
+</div>
+
+</div>
+
+<div class="mainPanel">
+
+<div class="card">
+
+<div class="tituloPrincipal">
+Gestor de reservas del Txoko NERBITARTE
+</div>
+
+<label>📅 Fecha</label>
+<input type="date" id="fecha" onchange="fechaSeleccionada()">
+
+<label>🍽 Turno</label>
+<select id="tipo" onchange="cambioTipo()" required>
+<option value="" selected disabled>Seleccionar</option>
+<option>COMIDA</option>
+<option>CENA</option>
+</select>
+
+<div id="infoTurno" class="infoTurno"></div>
+
+<label>👤 Socio</label>
+<input list="socios" id="socio">
+<datalist id="socios"></datalist>
+
+<label>✉️ Correo</label>
+<input id="correo">
+
+<label>👥 Personas</label>
+<select id="personas" required onchange="controlarBotonReserva()"></select>
+
+<button id="btnReservar" class="btnReservar">
+Confirmar RESERVA
+</button>
+
+<div id="msg"></div>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+<script>
+
+const AFORO_MAXIMO=40;
+
+var restanteComida=0;
+var restanteCena=0;
+
+/* INICIO */
+
+function iniciar(){
+
+var hoy = new Date();
+var max = new Date();
+max.setDate(hoy.getDate() + 25);
+
+fecha.min = hoy.toISOString().split("T")[0];
+fecha.max = max.toISOString().split("T")[0];
+
+google.script.run.withSuccessHandler(function(cfg){
+
+window.listaSocios = cfg.socios;
+
+var nombres = Object.keys(cfg.socios).sort(function(a,b){
+return a.localeCompare(b);
+});
+
+nombres.forEach(function(nombre){
+
+var opt=document.createElement("option");
+opt.value=nombre;
+document.getElementById("socios").appendChild(opt);
+
+});
+
+/* AUTORELLENAR CORREO */
+
+socio.addEventListener("input",function(){
+
+var email = listaSocios[socio.value];
+
+if(email){
+correo.value = email;
+}else{
+correo.value = "";
+}
+
+});
+
+}).getConfig();
+
+document.getElementById("btnReservar").onclick=confirmarReserva;
+
+actualizarInfoTurno();
+
+var hoy = new Date();
+fecha.value = hoy.toISOString().split("T")[0];
+fechaSeleccionada();
+
+}
+
+window.onload=function(){
+
+if(localStorage.getItem("loginOK") === "true"){
+
+document.getElementById("login-container").style.display="none";
+document.getElementById("app-container").style.display="block";
+
+iniciar();
+
+}
+
+};
+
+function login(){
+
+var usuario = document.getElementById("usuario").value;
+var password = document.getElementById("password").value;
+
+google.script.run
+.withSuccessHandler(function(res){
+
+if(res){
+
+// 👇 AÑADIR ESTO
+localStorage.setItem("loginOK", "true");
+
+// 👇 OPCIONAL: timeout 5 minutos
+setTimeout(function(){
+  localStorage.removeItem("loginOK");
+}, 5 * 60 * 1000);
+document.getElementById("login-container").style.display="none";
+document.getElementById("app-container").style.display="block";
+
+// 🚀 arranca tu sistema
+iniciar();
+
+}else{
+
+document.getElementById("error").innerText="Usuario o contraseña incorrectos";
+
+}
+
+})
+.validarUsuario(usuario,password);
+
+}
+
+/* TURNOS */
+
+function actualizarInfoTurno(){
+
+if(tipo.value==""){
+
+infoTurno.className="infoTurno";
+infoTurno.style.background="#f7f3e8";
+infoTurno.style.color="#6b7280";
+infoTurno.innerHTML="Seleccione turno a reservar";
+
+}
+else if(tipo.value=="COMIDA"){
+
+infoTurno.className="infoTurno turnoComida";
+infoTurno.style.color="#1c1c1e";
+infoTurno.innerHTML="☀️ Turno de COMIDA: 12:00 – 18:00";
+
+}
+else{
+
+infoTurno.className="infoTurno turnoCena";
+infoTurno.style.color="#1c1c1e";
+infoTurno.innerHTML="🌙 Turno de CENA: 19:00 – 24:00";
+
+}
+
+}
+
+
+/* CONTROL BOTON */
+
+function controlarBotonReserva(){
+
+if(!tipo.value) return; // 👈 CLAVE
+
+var btn=document.getElementById("btnReservar");
+
+var aforoActual = tipo.value=="COMIDA"
+? (AFORO_MAXIMO-restanteComida)
+: (AFORO_MAXIMO-restanteCena);
+
+var personasSel = personas.value;
+
+if(personasSel=="COMPLETO"){
+personasSel=40;
+}else{
+personasSel=parseInt(personasSel||0);
+}
+
+if(aforoActual>=AFORO_MAXIMO){
+
+btn.className="btnBloqueado";
+btn.disabled=true;
+btn.innerHTML="AFORO COMPLETO";
+return;
+}
+
+if(aforoActual + personasSel > AFORO_MAXIMO){
+
+btn.className="btnBloqueado";
+btn.disabled=true;
+btn.innerHTML="SUPERARÍA AFORO";
+return;
+}
+
+btn.className="btnReservar";
+btn.disabled=false;
+btn.innerHTML="Confirmar RESERVA";
+
+}
+
+/* PERSONAS */
+
+function actualizarSelectorPersonas(){
+
+var libres = tipo.value=="COMIDA" ? restanteComida : restanteCena;
+
+personas.innerHTML="<option value='' selected disabled>Seleccionar</option>";
+
+if(libres<=0){
+
+personas.innerHTML="<option>AFORO COMPLETO</option>";
+personas.disabled=true;
+return;
+
+}
+
+personas.disabled=false;
+
+if(libres==AFORO_MAXIMO){
+
+var optCompleto=document.createElement("option");
+optCompleto.value="COMPLETO";
+optCompleto.text="COMPLETO";
+personas.appendChild(optCompleto);
+
+}
+
+for(var i=1;i<=libres;i++){
+
+var o=document.createElement("option");
+o.value=i;
+o.text=i+" personas";
+personas.appendChild(o);
+
+}
+
+}
+
+/* CARGAR RESERVAS */
+
+function fechaSeleccionada(){
+
+var fechaSel=fecha.value;
+
+if(!fechaSel)return;
+
+google.script.run.withSuccessHandler(function(res){
+
+restanteComida=res.restanteComida;
+restanteCena=res.restanteCena;
+
+actualizarSelectorPersonas();
+controlarBotonReserva();
+
+/* AFORO */
+
+aforoComida.innerHTML="<b>COMIDA:</b> "+res.aforoComida+" personas / <b>"+res.restanteComida+"</b> plazas libres";
+aforoCena.innerHTML="<b>CENA:</b> "+res.aforoCena+" personas / <b>"+res.restanteCena+"</b> plazas libres";
+
+/* BARRAS */
+
+var porcComida=Math.round(res.aforoComida/40*100);
+var porcCena=Math.round(res.aforoCena/40*100);
+
+barraComida.style.width=porcComida+"%";
+barraCena.style.width=porcCena+"%";
+
+barraComida.innerHTML=porcComida+"%";
+barraCena.innerHTML=porcCena+"%";
+
+barraComida.style.background = porcComida<50 ? "#16a34a" : porcComida<80 ? "#f59e0b" : "#dc2626";
+barraCena.style.background = porcCena<50 ? "#16a34a" : porcCena<80 ? "#f59e0b" : "#dc2626";
+
+/* AGENDA */
+
+var html="";
+var comidas=[],cenas=[];
+
+res.reservas.forEach(function(r){
+
+var icono = "🧹";
+var txt=(r.personas==40)?"COMPLETO":r.personas+" pers.";
+
+var linea="<div class='reserva'>"+r.socio+" — "+txt+" "+icono+"</div>";
+
+if(r.tipo=="COMIDA") comidas.push(linea);
+else cenas.push(linea);
+
+});
+
+if(comidas.length)
+html+="<div class='separadorTurno'>☀️ COMIDAS</div>"+comidas.join("");
+
+if(cenas.length)
+html+="<div class='separadorTurno'>🌙 CENAS</div>"+cenas.join("");
+
+agenda.innerHTML=html || "Sin reservas";
+
+}).obtenerReservas(fechaSel);
+
+}
+
+/* CAMBIO TURNO */
+
+function cambioTipo(){
+
+actualizarInfoTurno();
+actualizarSelectorPersonas();
+controlarBotonReserva();
+
+}
+
+/* CONFIRMACION */
+
+function confirmarReserva(){
+
+// VALIDACIONES
+
+if(!fecha.value){
+  msg.innerHTML="<div class='msgError'>Selecciona una fecha</div>";
+  return;
+}
+
+if(!tipo.value){
+  msg.innerHTML="<div class='msgError'>Selecciona un turno</div>";
+  return;
+}
+
+if(!socio.value){
+  msg.innerHTML="<div class='msgError'>Introduce el socio</div>";
+  return;
+}
+
+if(!personas.value){
+  msg.innerHTML="<div class='msgError'>Selecciona número de personas</div>";
+  return;
+}
+
+// TEXTO CONFIRMACION
+
+var txt="¿Confirmas esta reserva?\n\n"+
+"Fecha: "+fecha.value+"\n"+
+"Turno: "+tipo.value+"\n"+
+"Socio: "+socio.value+"\n"+
+"Personas: "+personas.value;
+
+// CONFIRM
+
+if(!confirm(txt)) return;
+
+reservar();
+
+}
+
+/* CREAR RESERVA */
+
+function reservar(){
+
+var btn=document.getElementById("btnReservar");
+
+btn.disabled=true;
+btn.innerHTML="Procesando reserva...";
+
+var datos={
+fecha:fecha.value,
+tipo:tipo.value,
+socio:socio.value,
+correo:correo.value,
+personas:personas.value,
+};
+
+google.script.run
+.withSuccessHandler(function(){
+
+msg.innerHTML="<div class='msgSistema'>Reserva CONFIRMADA</div>";
+
+btn.className="btnNuevaReserva";
+btn.innerHTML="Realizar nueva reserva";
+btn.disabled=false;
+
+btn.onclick=function(){
+
+msg.innerHTML="";
+
+tipo.value="";
+
+actualizarSelectorPersonas();
+fechaSeleccionada();
+
+btn.className="btnReservar";
+btn.innerHTML="Confirmar RESERVA";
+btn.onclick=confirmarReserva;
+
+}
+
+})
+.withFailureHandler(function(err){
+
+btn.disabled=false;
+btn.innerHTML="Confirmar RESERVA";
+
+msg.innerHTML="<div class='msgError'>"+err.message+"</div>";
+
+})
+.crearReserva(datos);
+
+}
+
+</script>
+
+</body>
+</html>
