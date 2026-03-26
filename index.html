@@ -488,241 +488,274 @@ Confirmar RESERVA
 
 const API_URL = "https://script.google.com/macros/s/AKfycbym48dEO7uIxaVwxdXpV0HDjQ4cY6F4Dzm367xjv3eZco3cwhN8svfKsULJRDFMCYSyPw/exec";
 
-const AFORO_MAXIMO=40;
+const AFORO_MAXIMO = 40;
 
-var restanteComida=0;
-var restanteCena=0;
+let restanteComida = 0;
+let restanteCena = 0;
+let listaSocios = {};
 
-/* INICIO */
+/* =========================
+   INIT
+========================= */
 
-function iniciar(){
+async function iniciar(){
 
-var hoy = new Date();
-var max = new Date();
-max.setDate(hoy.getDate() + 25);
+  const hoy = new Date();
+  const max = new Date();
+  max.setDate(hoy.getDate() + 25);
 
-fecha.min = hoy.toISOString().split("T")[0];
-fecha.max = max.toISOString().split("T")[0];
+  fecha.min = hoy.toISOString().split("T")[0];
+  fecha.max = max.toISOString().split("T")[0];
 
-fetch(API_URL,{
-  method:"POST",
-  body:JSON.stringify({accion:"config"})
-})
-.then(r=>r.json())
-.then(cfg=>{
+  // 🔹 Cargar socios
+  const res = await fetch(API_URL, {
+    method: "POST",
+    body: JSON.stringify({ accion: "config" })
+  });
 
-window.listaSocios = cfg.socios;
+  const cfg = await res.json();
 
-var nombres = Object.keys(cfg.socios).sort((a,b)=>a.localeCompare(b));
+  listaSocios = cfg.socios;
 
-nombres.forEach(nombre=>{
-var opt=document.createElement("option");
-opt.value=nombre;
-socios.appendChild(opt);
-});
+  const nombres = Object.keys(listaSocios).sort((a,b)=>a.localeCompare(b));
 
-socio.addEventListener("input",function(){
-correo.value = listaSocios[socio.value] || "";
-});
+  nombres.forEach(nombre=>{
+    const opt = document.createElement("option");
+    opt.value = nombre;
+    socios.appendChild(opt);
+  });
 
-});
+  socio.addEventListener("input", ()=>{
+    correo.value = listaSocios[socio.value] || "";
+  });
 
-document.getElementById("btnReservar").onclick=confirmarReserva;
+  document.getElementById("btnReservar").onclick = confirmarReserva;
 
-actualizarInfoTurno();
+  actualizarInfoTurno();
 
-fecha.value = new Date().toISOString().split("T")[0];
-fechaSeleccionada();
-
+  fecha.value = hoy.toISOString().split("T")[0];
+  fechaSeleccionada();
 }
 
-/* LOGIN */
+/* =========================
+   LOGIN
+========================= */
 
-function login(){
+async function login(){
 
-fetch(API_URL,{
-  method:"POST",
-  body:JSON.stringify({
-    accion:"login",
-    usuario:usuario.value,
-    password:password.value
-  })
-})
-.then(r=>r.json())
-.then(res=>{
+  const usuario = document.getElementById("usuario").value;
+  const password = document.getElementById("password").value;
 
-if(res.ok){
-localStorage.setItem("loginOK","true");
+  const res = await fetch(API_URL, {
+    method: "POST",
+    body: JSON.stringify({
+      accion: "login",
+      usuario,
+      password
+    })
+  });
 
-document.getElementById("login-container").style.display="none";
-document.getElementById("app-container").style.display="block";
+  const data = await res.json();
 
-iniciar();
+  if(data.ok){
+    localStorage.setItem("loginOK", "true");
 
-}else{
-error.innerText="Usuario o contraseña incorrectos";
+    document.getElementById("login-container").style.display="none";
+    document.getElementById("app-container").style.display="block";
+
+    iniciar();
+  } else {
+    document.getElementById("error").innerText="Usuario o contraseña incorrectos";
+  }
 }
 
-});
+/* =========================
+   AUTO LOGIN
+========================= */
 
+window.onload = function(){
+  if(localStorage.getItem("loginOK")==="true"){
+    document.getElementById("login-container").style.display="none";
+    document.getElementById("app-container").style.display="block";
+    iniciar();
+  }
 }
 
-window.onload=function(){
-
-if(localStorage.getItem("loginOK")==="true"){
-document.getElementById("login-container").style.display="none";
-document.getElementById("app-container").style.display="block";
-iniciar();
-}
-
-};
-
-/* TURNOS */
+/* =========================
+   TURNOS
+========================= */
 
 function actualizarInfoTurno(){
 
-if(!tipo.value){
-infoTurno.className="infoTurno";
-infoTurno.innerHTML="Seleccione turno a reservar";
-}
-else if(tipo.value=="COMIDA"){
-infoTurno.className="infoTurno turnoComida";
-infoTurno.innerHTML="☀️ Turno de COMIDA: 12:00 – 18:00";
-}
-else{
-infoTurno.className="infoTurno turnoCena";
-infoTurno.innerHTML="🌙 Turno de CENA: 19:00 – 24:00";
+  if(!tipo.value){
+    infoTurno.innerHTML="Seleccione turno a reservar";
+    infoTurno.style.background="#f7f3e8";
+  }
+  else if(tipo.value=="COMIDA"){
+    infoTurno.innerHTML="☀️ Turno COMIDA: 12:00–18:00";
+    infoTurno.className="infoTurno turnoComida";
+  }
+  else{
+    infoTurno.innerHTML="🌙 Turno CENA: 19:00–24:00";
+    infoTurno.className="infoTurno turnoCena";
+  }
 }
 
+/* =========================
+   RESERVAS
+========================= */
+
+async function fechaSeleccionada(){
+
+  if(!fecha.value) return;
+
+  const res = await fetch(API_URL, {
+    method:"POST",
+    body: JSON.stringify({
+      accion:"reservas",
+      fecha: fecha.value
+    })
+  });
+
+  const data = await res.json();
+
+  restanteComida = data.restanteComida;
+  restanteCena = data.restanteCena;
+
+  actualizarSelectorPersonas();
+  controlarBotonReserva();
+
+  aforoComida.innerHTML = `<b>COMIDA:</b> ${data.aforoComida} / <b>${data.restanteComida}</b>`;
+  aforoCena.innerHTML = `<b>CENA:</b> ${data.aforoCena} / <b>${data.restanteCena}</b>`;
+
+  renderAgenda(data.reservas);
 }
 
-/* PERSONAS */
+/* =========================
+   AGENDA
+========================= */
+
+function renderAgenda(reservas){
+
+  let html="";
+  let comidas=[], cenas=[];
+
+  reservas.forEach(r=>{
+    let txt = (r.personas==40) ? "COMPLETO" : r.personas+" pers.";
+    let linea = `<div class='reserva'>${r.socio} — ${txt}</div>`;
+
+    if(r.tipo=="COMIDA") comidas.push(linea);
+    else cenas.push(linea);
+  });
+
+  if(comidas.length)
+    html+="<div class='separadorTurno'>☀️ COMIDAS</div>"+comidas.join("");
+
+  if(cenas.length)
+    html+="<div class='separadorTurno'>🌙 CENAS</div>"+cenas.join("");
+
+  agenda.innerHTML = html || "Sin reservas";
+}
+
+/* =========================
+   PERSONAS
+========================= */
 
 function actualizarSelectorPersonas(){
 
-var libres = tipo.value=="COMIDA" ? restanteComida : restanteCena;
+  let libres = tipo.value=="COMIDA" ? restanteComida : restanteCena;
 
-personas.innerHTML="<option disabled selected>Seleccionar</option>";
+  personas.innerHTML="<option disabled selected>Seleccionar</option>";
 
-if(libres<=0){
-personas.innerHTML="<option>AFORO COMPLETO</option>";
-personas.disabled=true;
-return;
+  if(libres<=0){
+    personas.innerHTML="<option>AFORO COMPLETO</option>";
+    personas.disabled=true;
+    return;
+  }
+
+  personas.disabled=false;
+
+  for(let i=1;i<=libres;i++){
+    let o=document.createElement("option");
+    o.value=i;
+    o.text=i+" personas";
+    personas.appendChild(o);
+  }
 }
 
-personas.disabled=false;
+/* =========================
+   BOTON
+========================= */
 
-if(libres==AFORO_MAXIMO){
-personas.innerHTML+="<option value='COMPLETO'>COMPLETO</option>";
+function controlarBotonReserva(){
+
+  let btn = document.getElementById("btnReservar");
+
+  if(!tipo.value) return;
+
+  let aforoActual = tipo.value=="COMIDA"
+    ? AFORO_MAXIMO-restanteComida
+    : AFORO_MAXIMO-restanteCena;
+
+  let p = parseInt(personas.value||0);
+
+  if(aforoActual+p>AFORO_MAXIMO){
+    btn.disabled=true;
+    btn.innerHTML="AFORO COMPLETO";
+    return;
+  }
+
+  btn.disabled=false;
+  btn.innerHTML="Confirmar RESERVA";
 }
 
-for(var i=1;i<=libres;i++){
-personas.innerHTML+=`<option value="${i}">${i} personas</option>`;
-}
-
-}
-
-/* RESERVAS */
-
-function fechaSeleccionada(){
-
-if(!fecha.value)return;
-
-fetch(API_URL,{
-  method:"POST",
-  body:JSON.stringify({
-    accion:"reservas",
-    fecha:fecha.value
-  })
-})
-.then(r=>r.json())
-.then(res=>{
-
-restanteComida=res.restanteComida;
-restanteCena=res.restanteCena;
-
-actualizarSelectorPersonas();
-controlarBotonReserva();
-
-/* AFORO */
-
-aforoComida.innerHTML=`<b>COMIDA:</b> ${res.aforoComida} personas / <b>${res.restanteComida}</b> plazas libres`;
-aforoCena.innerHTML=`<b>CENA:</b> ${res.aforoCena} personas / <b>${res.restanteCena}</b> plazas libres`;
-
-/* BARRAS */
-
-var porcComida=Math.round(res.aforoComida/40*100);
-var porcCena=Math.round(res.aforoCena/40*100);
-
-barraComida.style.width=porcComida+"%";
-barraCena.style.width=porcCena+"%";
-
-barraComida.innerHTML=porcComida+"%";
-barraCena.innerHTML=porcCena+"%";
-
-barraComida.style.background = porcComida<50 ? "#16a34a" : porcComida<80 ? "#f59e0b" : "#dc2626";
-barraCena.style.background = porcCena<50 ? "#16a34a" : porcCena<80 ? "#f59e0b" : "#dc2626";
-
-/* AGENDA */
-
-var comidas=[],cenas=[];
-
-res.reservas.forEach(r=>{
-var txt=(r.personas==40)?"COMPLETO":r.personas+" pers.";
-var linea=`<div class='reserva'>${r.socio} — ${txt} 🧹</div>`;
-if(r.tipo=="COMIDA") comidas.push(linea);
-else cenas.push(linea);
-});
-
-var html="";
-if(comidas.length) html+="<div class='separadorTurno'>☀️ COMIDAS</div>"+comidas.join("");
-if(cenas.length) html+="<div class='separadorTurno'>🌙 CENAS</div>"+cenas.join("");
-
-agenda.innerHTML=html || "Sin reservas";
-
-});
-
-}
-
-/* RESERVAR */
+/* =========================
+   CONFIRMAR
+========================= */
 
 function confirmarReserva(){
 
-if(!fecha.value || !tipo.value || !socio.value || !personas.value){
-msg.innerHTML="<div class='msgError'>Faltan datos</div>";
-return;
+  if(!fecha.value || !tipo.value || !socio.value || !personas.value){
+    msg.innerHTML="<div class='msgError'>Completa todos los campos</div>";
+    return;
+  }
+
+  if(!confirm("¿Confirmar reserva?")) return;
+
+  reservar();
 }
 
-if(!confirm("¿Confirmas esta reserva?")) return;
+/* =========================
+   RESERVAR
+========================= */
 
-reservar();
+async function reservar(){
 
-}
+  let btn = document.getElementById("btnReservar");
 
-function reservar(){
+  btn.disabled=true;
+  btn.innerHTML="Procesando...";
 
-fetch(API_URL,{
-  method:"POST",
-  body:JSON.stringify({
-    accion:"crear",
-    fecha:fecha.value,
-    tipo:tipo.value,
-    socio:socio.value,
-    correo:correo.value,
-    personas:personas.value
-  })
-})
-.then(r=>r.json())
-.then(()=>{
+  const res = await fetch(API_URL,{
+    method:"POST",
+    body: JSON.stringify({
+      accion:"crear",
+      fecha:fecha.value,
+      tipo:tipo.value,
+      socio:socio.value,
+      correo:correo.value,
+      personas:personas.value
+    })
+  });
 
-msg.innerHTML="<div class='msgSistema'>Reserva CONFIRMADA</div>";
-fechaSeleccionada();
+  const data = await res.json();
 
-})
-.catch(()=>{
-msg.innerHTML="<div class='msgError'>Error</div>";
-});
+  msg.innerHTML="<div class='msgSistema'>Reserva confirmada</div>";
 
+  btn.disabled=false;
+  btn.innerHTML="Nueva reserva";
+
+  fechaSeleccionada();
 }
 
 </script>
