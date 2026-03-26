@@ -554,8 +554,8 @@ fetch(API_URL,{
 if(res.ok){
 localStorage.setItem("loginOK","true");
 
-login-container.style.display="none";
-app-container.style.display="block";
+document.getElementById("login-container").style.display="none";
+document.getElementById("app-container").style.display="block";
 
 iniciar();
 
@@ -570,8 +570,8 @@ error.innerText="Usuario o contraseña incorrectos";
 window.onload=function(){
 
 if(localStorage.getItem("loginOK")==="true"){
-login-container.style.display="none";
-app-container.style.display="block";
+document.getElementById("login-container").style.display="none";
+document.getElementById("app-container").style.display="block";
 iniciar();
 }
 
