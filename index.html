@@ -533,10 +533,19 @@ async function iniciar(){
 
   actualizarInfoTurno();
 
-  fecha.value = hoy.toISOString().split("T")[0];
+  let hoyLocal = new Date();
+hoyLocal.setMinutes(hoyLocal.getMinutes() - hoyLocal.getTimezoneOffset());
+fecha.value = hoyLocal.toISOString().split("T")[0];
   fechaSeleccionada();
 }
 
+function cambioTipo(){
+  actualizarInfoTurno();
+  actualizarSelectorPersonas();
+  controlarBotonReserva();
+  fechaSeleccionada(); // 👈 AÑADIR ESTA LÍNEA
+}
+  
 /* =========================
    LOGIN
 ========================= */
@@ -574,11 +583,7 @@ async function login(){
 ========================= */
 
 window.onload = function(){
-  if(localStorage.getItem("loginOK")==="true"){
-    document.getElementById("login-container").style.display="none";
-    document.getElementById("app-container").style.display="block";
-    iniciar();
-  }
+  localStorage.removeItem("loginOK"); // 👈 FORZAR LOGIN
 }
 
 /* =========================
