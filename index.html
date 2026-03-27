@@ -587,7 +587,12 @@ async function iniciar(){
   
   const cfg = await res.json();
 
-  listaSocios = cfg.socios;
+  lif(!cfg || !cfg.socios){
+  console.error("Error cargando socios", cfg);
+  return;
+}
+
+listaSocios = cfg.socios;
 
   const nombres = Object.keys(listaSocios).sort((a,b)=>a.localeCompare(b));
 
