@@ -576,34 +576,43 @@ async function iniciar(){
   fecha.min = hoy.toISOString().split("T")[0];
   fecha.max = max.toISOString().split("T")[0];
 
-  // 🔹 Cargar socios
- const res = await fetch(API_URL, {
-  method: "POST",
-  headers: {
-    "Content-Type": "application/json"
-  },
-  body: JSON.stringify({ accion: "config" })
-});
-  
-  const cfg = await res.json();
+ // 🔹 Cargar socios (bloque robusto)
+let cfg;
 
- if(!cfg || !cfg.socios){
-  console.error("Error cargando socios", cfg);
-  return;
+try{
+  const res = await fetch(API_URL, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({ accion: "config" })
+  });
+
+  cfg = await res.json();
+
+}catch(e){
+  console.error("Error fetch config", e);
+  cfg = null;
 }
 
-listaSocios = cfg.socios;
+// ✅ NO ROMPER APP SI FALLA
+if(!cfg || !cfg.socios){
+  listaSocios = {};
+}else{
+  listaSocios = cfg.socios;
+}
 
-  // 🔴 AQUÍ (limpiar datalist antes de rellenar)
+// 🔹 Limpiar lista antes de rellenar
 socios.innerHTML = "";
-  
-  const nombres = Object.keys(listaSocios).sort((a,b)=>a.localeCompare(b));
 
-  nombres.forEach(nombre=>{
-    const opt = document.createElement("option");
-    opt.value = nombre;
-    socios.appendChild(opt);
-  });
+// 🔹 Rellenar socios
+const nombres = Object.keys(listaSocios).sort((a,b)=>a.localeCompare(b));
+
+nombres.forEach(nombre=>{
+  const opt = document.createElement("option");
+  opt.value = nombre;
+  socios.appendChild(opt);
+});
 
   socio.addEventListener("input", ()=>{
     correo.value = listaSocios[socio.value] || "";
