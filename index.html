@@ -421,6 +421,74 @@ html, body{
 
 }
 
+  /* MODAL */
+
+.modal{
+  position:fixed;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  background:rgba(0,0,0,0.45);
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  opacity:0;
+  pointer-events:none;
+  transition:0.2s;
+}
+
+.modalActivo{
+  opacity:1;
+  pointer-events:auto;
+}
+
+.modalBox{
+  background:white;
+  padding:22px;
+  border-radius:16px;
+  width:90%;
+  max-width:420px;
+
+  box-shadow:0 10px 30px rgba(0,0,0,0.25);
+}
+
+.modalTitulo{
+  font-weight:700;
+  font-size:18px;
+  margin-bottom:12px;
+  text-align:center;
+}
+
+.modalContenido{
+  font-size:14px;
+  margin-bottom:18px;
+  line-height:1.5;
+}
+
+.modalContenido b{
+  display:block;
+  margin-top:6px;
+}
+
+.modalBotones{
+  display:flex;
+  gap:10px;
+}
+
+.btnCancelar{
+  flex:1;
+  background:#d1d5db;
+  color:#111;
+}
+
+.btnAceptar{
+  flex:1;
+  background:#16a34a;
+  color:white;
+}  
 </style>
 
 </head>
@@ -796,16 +864,7 @@ function confirmarReserva(){
     return;
   }
 
-  let texto =
-    "¿Confirmar reserva?\n\n" +
-    "📅 Fecha: " + fecha.value + "\n" +
-    "🍽 Turno: " + tipo.value + "\n" +
-    "👤 Socio: " + socio.value + "\n" +
-    "👥 Personas: " + personas.value;
-
-  if(!confirm(texto)) return;
-
-  reservar();
+  abrirModal();
 }
 
 /* =========================
@@ -851,7 +910,45 @@ msg.innerHTML="<div class='msgSistema'>Reserva confirmada</div>";
   fechaSeleccionada();
 }
 
+  function abrirModal(){
+
+  const contenido = `
+    <b>📅 Fecha:</b> ${fecha.value}
+    <b>🍽 Turno:</b> ${tipo.value}
+    <b>👤 Socio:</b> ${socio.value}
+    <b>✉️ Correo:</b> ${correo.value || "-"}
+    <b>👥 Personas:</b> ${personas.value}
+  `;
+
+  document.getElementById("modalContenido").innerHTML = contenido;
+
+  document.getElementById("modalConfirm").classList.add("modalActivo");
+}
+
+function cerrarModal(){
+  document.getElementById("modalConfirm").classList.remove("modalActivo");
+}
+
+function confirmarModal(){
+  cerrarModal();
+  reservar();
+}
+  
 </script>
 
+  <div id="modalConfirm" class="modal">
+  <div class="modalBox">
+
+    <div class="modalTitulo">Confirmar reserva</div>
+
+    <div id="modalContenido" class="modalContenido"></div>
+
+    <div class="modalBotones">
+      <button class="btnCancelar" onclick="cerrarModal()">Cancelar</button>
+      <button class="btnAceptar" onclick="confirmarModal()">Confirmar</button>
+    </div>
+
+  </div>
+</div>  
 </body>
 </html>
