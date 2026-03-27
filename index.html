@@ -69,7 +69,7 @@ body{
   transform:translateY(2px);
   box-shadow:0 3px 6px rgba(0,0,0,0.2);
 }
-
+  
 *{box-sizing:border-box;}
 
 body{
@@ -321,6 +321,37 @@ html, body{
     font-size:16px;
     padding:14px;
   }
+
+  
+  try{
+
+  const res = await fetch(API_URL, {
+    method: "POST",
+    headers: {"Content-Type":"application/json"},
+    body: JSON.stringify({
+      accion: "login",
+      usuario,
+      password
+    })
+  });
+
+  const data = await res.json();
+
+  if(data.ok){
+    localStorage.setItem("loginOK", "true");
+
+    document.getElementById("login-container").style.display="none";
+    document.getElementById("app-container").style.display="block";
+
+    iniciar();
+  } else {
+    document.getElementById("error").innerText="Usuario o contraseña incorrectos";
+  }
+
+}catch(e){
+  document.getElementById("error").innerText="Error de conexión";
+}
+  
   /* 👇 APP RESERVAS RESPONSIVE */
 
  .layout{
@@ -513,6 +544,10 @@ async function iniciar(){
     body: JSON.stringify({ accion: "config" })
   });
 
+  headers: {
+  "Content-Type": "application/json"
+}
+  
   const cfg = await res.json();
 
   listaSocios = cfg.socios;
@@ -555,26 +590,33 @@ async function login(){
   const usuario = document.getElementById("usuario").value;
   const password = document.getElementById("password").value;
 
-  const res = await fetch(API_URL, {
-    method: "POST",
-    body: JSON.stringify({
-      accion: "login",
-      usuario,
-      password
-    })
-  });
+  try{
 
-  const data = await res.json();
+    const res = await fetch(API_URL, {
+      method: "POST",
+      headers: {"Content-Type":"application/json"},
+      body: JSON.stringify({
+        accion: "login",
+        usuario,
+        password
+      })
+    });
 
-  if(data.ok){
-    localStorage.setItem("loginOK", "true");
+    const data = await res.json();
 
-    document.getElementById("login-container").style.display="none";
-    document.getElementById("app-container").style.display="block";
+    if(data.ok){
+      localStorage.setItem("loginOK", "true");
 
-    iniciar();
-  } else {
-    document.getElementById("error").innerText="Usuario o contraseña incorrectos";
+      document.getElementById("login-container").style.display="none";
+      document.getElementById("app-container").style.display="block";
+
+      iniciar();
+    } else {
+      document.getElementById("error").innerText="Usuario o contraseña incorrectos";
+    }
+
+  }catch(e){
+    document.getElementById("error").innerText="Error de conexión";
   }
 }
 
@@ -583,7 +625,13 @@ async function login(){
 ========================= */
 
 window.onload = function(){
-  localStorage.removeItem("loginOK"); // 👈 FORZAR LOGIN
+
+  if(localStorage.getItem("loginOK") === "true"){
+    document.getElementById("login-container").style.display="none";
+    document.getElementById("app-container").style.display="block";
+    iniciar();
+  }
+
 }
 
 /* =========================
@@ -622,8 +670,17 @@ async function fechaSeleccionada(){
     })
   });
 
+  headers: {
+  "Content-Type": "application/json"
+}
+  
   const data = await res.json();
 
+  if(data.error){
+  msg.innerHTML=`<div class='msgError'>${data.error}</div>`;
+  return;
+}
+  
   restanteComida = data.restanteComida;
   restanteCena = data.restanteCena;
 
@@ -683,6 +740,8 @@ function actualizarSelectorPersonas(){
   let libres = tipo.value=="COMIDA" ? restanteComida : restanteCena;
 
   personas.innerHTML="<option disabled selected>Seleccionar</option>";
+
+  personas.value = "";
 
   if(libres<=0){
     personas.innerHTML="<option>AFORO COMPLETO</option>";
@@ -762,12 +821,22 @@ async function reservar(){
       socio:socio.value,
       correo:correo.value,
       personas:personas.value
-    })
+    }),
+    headers: {
+  "Content-Type": "application/json"
+}
   });
 
   const data = await res.json();
 
-  msg.innerHTML="<div class='msgSistema'>Reserva confirmada</div>";
+ if(data.error){
+  msg.innerHTML=`<div class='msgError'>${data.error}</div>`;
+  btn.disabled=false;
+  btn.innerHTML="Confirmar RESERVA";
+  return;
+}
+
+msg.innerHTML="<div class='msgSistema'>Reserva confirmada</div>";
 
   btn.disabled=false;
   btn.innerHTML="Nueva reserva";
