@@ -625,8 +625,20 @@ async function fechaSeleccionada(){
   actualizarSelectorPersonas();
   controlarBotonReserva();
 
-  aforoComida.innerHTML = `<b>COMIDA:</b> ${data.aforoComida} / <b>${data.restanteComida}</b>`;
-  aforoCena.innerHTML = `<b>CENA:</b> ${data.aforoCena} / <b>${data.restanteCena}</b>`;
+aforoComida.innerHTML = `<b>COMIDA:</b> ${data.aforoComida} personas / <b>${data.restanteComida}</b> plazas libres`;
+aforoCena.innerHTML = `<b>CENA:</b> ${data.aforoCena} personas / <b>${data.restanteCena}</b> plazas libres`;
+
+let porcComida = Math.round(data.aforoComida / AFORO_MAXIMO * 100);
+let porcCena = Math.round(data.aforoCena / AFORO_MAXIMO * 100);
+
+barraComida.style.width = porcComida + "%";
+barraCena.style.width = porcCena + "%";
+
+barraComida.innerHTML = porcComida + "%";
+barraCena.innerHTML = porcCena + "%";
+
+barraComida.style.background = porcComida < 50 ? "#16a34a" : porcComida < 80 ? "#f59e0b" : "#dc2626";
+barraCena.style.background = porcCena < 50 ? "#16a34a" : porcCena < 80 ? "#f59e0b" : "#dc2626";
 
   renderAgenda(data.reservas);
 }
