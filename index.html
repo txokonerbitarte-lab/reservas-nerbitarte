@@ -594,6 +594,9 @@ async function iniciar(){
 
 listaSocios = cfg.socios;
 
+  // 🔴 AQUÍ (limpiar datalist antes de rellenar)
+socios.innerHTML = "";
+  
   const nombres = Object.keys(listaSocios).sort((a,b)=>a.localeCompare(b));
 
   nombres.forEach(nombre=>{
