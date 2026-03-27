@@ -796,7 +796,14 @@ function confirmarReserva(){
     return;
   }
 
-  if(!confirm("¿Confirmar reserva?")) return;
+  let texto =
+    "¿Confirmar reserva?\n\n" +
+    "📅 Fecha: " + fecha.value + "\n" +
+    "🍽 Turno: " + tipo.value + "\n" +
+    "👤 Socio: " + socio.value + "\n" +
+    "👥 Personas: " + personas.value;
+
+  if(!confirm(texto)) return;
 
   reservar();
 }
