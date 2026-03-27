@@ -587,7 +587,7 @@ async function iniciar(){
   
   const cfg = await res.json();
 
-  lif(!cfg || !cfg.socios){
+ if(!cfg || !cfg.socios){
   console.error("Error cargando socios", cfg);
   return;
 }
