@@ -321,36 +321,6 @@ html, body{
     font-size:16px;
     padding:14px;
   }
-
-  
-  try{
-
-  const res = await fetch(API_URL, {
-    method: "POST",
-    headers: {"Content-Type":"application/json"},
-    body: JSON.stringify({
-      accion: "login",
-      usuario,
-      password
-    })
-  });
-
-  const data = await res.json();
-
-  if(data.ok){
-    localStorage.setItem("loginOK", "true");
-
-    document.getElementById("login-container").style.display="none";
-    document.getElementById("app-container").style.display="block";
-
-    iniciar();
-  } else {
-    document.getElementById("error").innerText="Usuario o contraseña incorrectos";
-  }
-
-}catch(e){
-  document.getElementById("error").innerText="Error de conexión";
-}
   
   /* 👇 APP RESERVAS RESPONSIVE */
 
@@ -607,14 +577,13 @@ async function iniciar(){
   fecha.max = max.toISOString().split("T")[0];
 
   // 🔹 Cargar socios
-  const res = await fetch(API_URL, {
-    method: "POST",
-    body: JSON.stringify({ accion: "config" })
-  });
-
+ const res = await fetch(API_URL, {
+  method: "POST",
   headers: {
-  "Content-Type": "application/json"
-}
+    "Content-Type": "application/json"
+  },
+  body: JSON.stringify({ accion: "config" })
+});
   
   const cfg = await res.json();
 
@@ -730,17 +699,16 @@ async function fechaSeleccionada(){
 
   if(!fecha.value) return;
 
-  const res = await fetch(API_URL, {
-    method:"POST",
-    body: JSON.stringify({
-      accion:"reservas",
-      fecha: fecha.value
-    })
-  });
-
+const res = await fetch(API_URL, {
+  method:"POST",
   headers: {
-  "Content-Type": "application/json"
-}
+    "Content-Type": "application/json"
+  },
+  body: JSON.stringify({
+    accion:"reservas",
+    fecha: fecha.value
+  })
+});
   
   const data = await res.json();
 
