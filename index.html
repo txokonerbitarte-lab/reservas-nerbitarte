@@ -949,7 +949,9 @@ async function reservar(){
 }
 
 function cerrarModal(){
-  ddocument.getElementById("btnReservar").disabled = false;
+  document.getElementById("modalConfirm").classList.remove("modalActivo");
+  document.getElementById("btnReservar").disabled = false;
+}
 
 function confirmarModal(){
   cerrarModal();
