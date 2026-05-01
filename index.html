@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="author" content="Yon Uranga">
+<meta name="application-name" content="TXOKOkidea">
+<meta name="copyright" content="© 2026 Yon Uranga. Todos los derechos reservados.">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>Txoko Nerbitarte · Bilbao · Desde 1976</title>
+
+<!-- SEO -->
+<meta name="description" content="Txoko Nerbitarte, sociedad gastronómica de Bilbao fundada en 1976. Medio siglo de tradición, convivencia y buena mesa en el corazón de Bilbao.">
+<meta name="keywords" content="txoko Bilbao, sociedad gastronómica Bilbao, Nerbitarte, txoko Nerbitarte, sociedad gastronómica Bizkaia, txoko bilbaino">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://www.nerbitarte.com">
+
+<!-- Open Graph -->
+<meta property="og:title" content="Txoko Nerbitarte · Bilbao · Desde 1976">
+<meta property="og:description" content="Sociedad gastronómica de Bilbao fundada en 1976. Medio siglo de tradición, convivencia y buena mesa.">
+<meta property="og:url" content="https://www.nerbitarte.com">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="es_ES">
+
+<!-- Schema.org para búsqueda local -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FoodEstablishment",
+  "name": "Txoko Nerbitarte",
+  "description": "Sociedad gastronómica de Bilbao fundada en 1976",
+  "foundingDate": "1976",
+  "address": {
+    "@type": "PostalAddress",
+    "streetAddress": "Calle Muros de San Pedro, 2",
+    "addressLocality": "Bilbao",
+    "postalCode": "48007",
+    "addressCountry": "ES"
+  },
+  "url": "https://www.nerbitarte.com"
+}
+</script>
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Josefin+Sans:wght@200;300;400;600&display=swap');
+
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html,body{width:100%;background:#faf6f1;font-family:'Josefin Sans',sans-serif;-webkit-text-size-adjust:100%;}
+
+.home-card{width:100%;max-width:1100px;margin:0 auto;background:#faf6f1;box-shadow:0 8px 48px rgba(0,0,0,0.13);}
+
+.topbar{background:#7b1e2b;padding:10px 48px;display:flex;align-items:center;justify-content:space-between;}
+.topbar-l{font-size:9px;font-weight:600;letter-spacing:3px;text-transform:uppercase;color:rgba(255,255,255,0.55);}
+.topbar-r{font-family:'Playfair Display',serif;font-size:11px;color:rgba(255,255,255,0.4);}
+.movil .topbar-r{display:none;}
+
+.hero-btn{
+  display:inline-flex;align-items:center;gap:8px;
+  font-family:'Josefin Sans',sans-serif;
+  font-size:11px;font-weight:600;letter-spacing:2px;text-transform:uppercase;
+  color:white;background:#7b1e2b;padding:13px 28px;border-radius:999px;
+  border:1.5px solid #c8a050;text-decoration:none;
+  box-shadow:0 4px 14px rgba(123,30,43,0.28);margin-bottom:18px;
+  -webkit-tap-highlight-color:transparent;align-self:flex-start;
+  transition:filter 0.15s, transform 0.1s;
+}
+.hero-btn:hover{filter:brightness(1.08);}
+.hero-btn:active{transform:scale(0.97);}
+.movil .hero-btn{width:100%;justify-content:center;font-size:14px;padding:16px 28px;margin-bottom:20px;}
+
+.hero{padding:40px 48px 32px;display:grid;grid-template-columns:auto 1fr;gap:48px;align-items:center;border-bottom:1px solid #e5d0c8;}
+.logo-wrap{display:inline-block;position:relative;flex-shrink:0;}
+.logo-wrap img{width:220px;height:auto;display:block;}
+
+.sello{
+  position:absolute;bottom:-16px;right:-20px;width:66px;height:66px;border-radius:50%;
+  background:linear-gradient(90deg,#7B1E2B 0%,#9B3A4D 20%,#c8a050 50%,#9B3A4D 80%,#7B1E2B 100%);
+  background-size:200% 100%;animation:shimmerSello 3s ease-in-out infinite;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  border:3px solid #faf6f1;box-shadow:0 4px 16px rgba(0,0,0,0.3);z-index:10;
+}
+.sello::before{content:"";position:absolute;inset:5px;border-radius:50%;border:1px solid rgba(200,160,80,0.45);}
+@keyframes shimmerSello{0%{background-position:200% 0;}100%{background-position:-200% 0;}}
+.sello-num{font-family:'Playfair Display',serif;font-size:24px;font-weight:900;color:#c8a050;line-height:1;position:relative;}
+.sello-txt{font-size:7px;font-weight:300;letter-spacing:1.5px;text-transform:uppercase;color:rgba(200,160,80,0.85);position:relative;}
+
+.hero-text{display:flex;flex-direction:column;justify-content:center;}
+.kicker{font-size:10px;font-weight:600;letter-spacing:2.5px;text-transform:uppercase;color:#7b1e2b;margin-bottom:10px;}
+.titulo{font-family:'Playfair Display',serif;font-size:56px;font-weight:900;color:#100508;line-height:1.05;margin-bottom:8px;}
+.subtitulo{font-family:'Playfair Display',serif;font-size:19px;font-style:italic;color:#7b1e2b;margin-bottom:18px;}
+.divider{display:flex;align-items:center;gap:12px;}
+.divider-line{flex:1;height:1px;background:rgba(123,30,43,0.2);}
+.divider-dot{width:5px;height:5px;border-radius:50%;background:#7b1e2b;flex-shrink:0;}
+
+.body-text{padding:32px 48px;display:grid;grid-template-columns:1fr 1fr 1fr;gap:36px;border-bottom:1px solid #e5d0c8;}
+.col-txt{font-family:'Cormorant Garamond',serif;font-size:15.5px;color:#3a2820;line-height:1.85;text-align:justify;}
+.col-txt+.col-txt{border-left:1px solid #e5d0c8;padding-left:36px;}
+.col-title{font-family:'Josefin Sans',sans-serif;font-size:9px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:#7b1e2b;margin-bottom:12px;}
+
+.mapa-section{padding:0 48px 32px;}
+.mapa-label{font-size:9px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:#7b1e2b;margin:24px 0 10px;}
+.mapa-wrap{border-radius:6px;overflow:hidden;position:relative;border:1px solid #e5d0c8;cursor:pointer;}
+.mapa-wrap iframe{width:100%;height:210px;border:none;display:block;pointer-events:none;}
+.mapa-overlay{position:absolute;bottom:0;left:0;right:0;background:linear-gradient(to top,rgba(16,5,8,0.82) 0%,transparent 100%);padding:28px 14px 12px;display:flex;align-items:flex-end;justify-content:space-between;gap:10px;}
+.mapa-dir{font-size:11px;color:rgba(255,255,255,0.85);line-height:1.5;}
+.mapa-dir strong{display:block;font-size:12px;font-weight:600;color:white;margin-bottom:2px;}
+.mapa-btn{font-size:9px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:#c8a050;border:1px solid rgba(200,160,80,0.5);padding:7px 12px;border-radius:2px;white-space:nowrap;text-decoration:none;flex-shrink:0;}
+
+.bottombar{background:#f0e8e9;border-top:1px solid #ddc8cb;padding:14px 48px;display:flex;align-items:center;justify-content:space-between;}
+.bottombar-l{font-size:9px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:#9c7070;}
+.copyright{background:#f0e8e9;border-top:1px solid #ddc8cb;padding:8px 48px;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:#c4a0a0;text-align:center;display:flex;justify-content:space-between;align-items:center;}
+
+/* ═══ MÓVIL ═══ */
+.movil .topbar{padding:10px 20px;}
+.movil .hero{grid-template-columns:1fr !important;display:flex !important;flex-direction:column !important;align-items:center !important;text-align:center;padding:36px 20px 32px;gap:0;}
+.movil .logo-wrap{margin:0 auto 36px;}
+.movil .logo-wrap img{width:260px;}
+.movil .sello{width:74px;height:74px;bottom:-18px;right:-14px;}
+.movil .sello-num{font-size:30px;}
+.movil .sello-txt{font-size:8px;}
+.movil .hero-text{width:100%;}
+.movil .kicker{font-size:11px;margin-bottom:12px;}
+.movil .titulo{font-size:46px;margin-bottom:8px;}
+.movil .subtitulo{font-size:19px;margin-bottom:20px;}
+.movil .divider{width:100%;}
+.movil .body-text{display:block !important;padding:0 20px;border-bottom:1px solid #e5d0c8;}
+.movil .col-txt{display:block !important;width:100% !important;font-size:24px !important;line-height:1.9 !important;text-align:justify !important;padding:26px 0 !important;border-left:none !important;padding-left:0 !important;border-bottom:1px solid #e5d0c8;}
+.movil .col-txt:last-child{border-bottom:none;}
+.movil .col-title{font-size:11px;margin-bottom:10px;}
+.movil .mapa-section{padding:0 20px 28px;}
+.movil .mapa-label{margin-top:20px;}
+.movil .mapa-wrap iframe{height:220px;}
+.movil .bottombar{flex-direction:column;gap:16px;padding:20px;align-items:stretch;text-align:center;}
+.movil .bottombar-l{font-size:10px;text-align:center;}
+.movil .copyright{padding:8px 20px;flex-direction:column;gap:6px;}
+</style>
+</head>
+<body>
+<div class="home-card">
+
+  <div class="topbar">
+    <span class="topbar-l">Txoko Nerbitarte · Bilbao</span>
+    <span class="topbar-r">1976</span>
+  </div>
+
+  <div class="hero">
+    <div class="logo-wrap">
+      <img src="https://lh3.googleusercontent.com/d/12S8qqOoaHjZ1WxB7FKRC1ivMxEiO8IrA" alt="Logo Txoko Nerbitarte Bilbao">
+      <div class="sello">
+        <span class="sello-num">50</span>
+        <span class="sello-txt">años</span>
+      </div>
+    </div>
+    <div class="hero-text">
+      <div class="kicker">Sociedad Gastronómica · Bilbao</div>
+      <div class="titulo">Nerbitarte</div>
+      <div class="subtitulo">Medio siglo de buena mesa</div>
+      <a class="hero-btn" href="https://script.google.com/macros/s/AKfycbw_k9pxPpN5Qh85RoE0z4otO7MeVxp3Ka0PLzMC7WdWrZdzJAB2QIUfYaEDx2o2gPIa/exec" target="_top">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/></svg>
+        Acceso socios
+      </a>
+      <div class="divider">
+        <div class="divider-line"></div>
+        <div class="divider-dot"></div>
+        <div class="divider-line"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="body-text">
+    <div class="col-txt">
+      <div class="col-title">El Txoko</div>
+      El Txoko Nerbitarte es un espacio gastronómico y social donde la tradición y la convivencia forman parte de su esencia. Fundado en Bilbao, en 1976, cuenta con una larga trayectoria que refleja décadas de historia, respeto por las costumbres y amor por la buena mesa.
+    </div>
+    <div class="col-txt">
+      <div class="col-title">Los socios</div>
+      Un lugar de referencia para sus veintidós socios, que comparten la pasión por la cocina y el valor de disfrutar juntos. Cada reserva es una oportunidad para reunirse alrededor del fuego, de los ingredientes de temporada y de las recetas que forman parte de la memoria colectiva del Txoko.
+    </div>
+    <div class="col-txt">
+      <div class="col-title">50 años</div>
+      En 2026 celebramos medio siglo de historia. Cincuenta años en los que generaciones de socios han compartido mesa, cocina y amistad. Un aniversario que honra el pasado y mira con ilusión hacia los próximos cincuenta años de tradición gastronómica bilbaína.
+    </div>
+  </div>
+
+  <div class="mapa-section">
+    <div class="mapa-label">↗ Dónde estamos</div>
+    <div class="mapa-wrap" onclick="window.open('https://maps.google.com/?q=Calle+Muros+de+San+Pedro+2+Bilbao','_blank')">
+      <iframe src="https://maps.google.com/maps?q=Muros+de+San+Pedro+2,+Bilbao&output=embed&z=16" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+      <div class="mapa-overlay">
+        <div class="mapa-dir">
+          <strong>Txoko Nerbitarte</strong>
+          Calle Muros de San Pedro, 2 · 48007 Bilbao
+        </div>
+        <a class="mapa-btn" href="https://maps.google.com/?q=Calle+Muros+de+San+Pedro+2+Bilbao" target="_blank" onclick="event.stopPropagation()">↗ Cómo llegar</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="bottombar">
+    <span class="bottombar-l">Socios · Reservas · Bilbao</span>
+  </div>
+
+  <div class="copyright">
+    <span>© Txoko Nerbitarte · Bilbao · Desde 1976</span>
+    <span style="color:#b8a0a0;">Powered by <strong style="color:#9c7070;">TxokoKidea</strong> · © 2026 Yon Uranga</span>
+  </div>
+
+</div>
+
+<script>
+function esMobil(){
+  var ua=navigator.userAgent||"";
+  if(/iPhone|iPod/i.test(ua))return true;
+  if(/iPad/i.test(ua))return true;
+  if(/Android.*Mobile/i.test(ua))return true;
+  if(/Android/i.test(ua)&&window.screen.width<=768)return true;
+  if(navigator.maxTouchPoints>1&&window.screen.width<=768)return true;
+  return false;
+}
+function aplicarResponsive(){
+  var b=document.body;
+  b.classList.remove("movil","tablet");
+  if(esMobil()){b.classList.add("movil");}
+  else{var w=Math.min(window.screen.width||9999,window.innerWidth||9999);if(w<=900)b.classList.add("tablet");}
+}
+aplicarResponsive();
+window.addEventListener("resize",aplicarResponsive);
+</script>
+</body>
+</html>
