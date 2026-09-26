@@ -157,6 +157,7 @@ html,body{width:100%;background:#faf6f1;font-family:'Josefin Sans',sans-serif;-w
 .plano .ruta{fill:none;stroke-linecap:round;stroke-linejoin:round;}
 .plano .halo{fill:none;stroke:#fff;stroke-opacity:.85;stroke-linecap:round;stroke-linejoin:round;}
 .plano .r-granate{stroke:#7b1e2b;} .plano .r-oro{stroke:#c8a050;} .plano .r-rosa{stroke:#b54b5d;}
+.plano .chip{transition:transform .35s ease;}
 .plano .chip rect{fill:#fff;filter:drop-shadow(0 3px 8px rgba(43,37,39,.18));}
 .plano .chip text{font-family:"Century Gothic","Jost",sans-serif;font-size:13px;fill:#2b2527;}
 .plano .chip .t2{fill:#7b1e2b;font-weight:600;}
@@ -212,7 +213,7 @@ html,body{width:100%;background:#faf6f1;font-family:'Josefin Sans',sans-serif;-w
 /* Móvil servido por Apps Script: la página se dibuja a ~980 px y el navegador la reduce */
 .movil.escala-gas .mapa-caja{position:static;}
 .movil.escala-gas .mapa-wrap{height:760px;border-radius:22px;}
-.movil.escala-gas .plano .chip text{font-size:21px;}
+.movil.escala-gas .plano .chip text{font-size:17px;}
 .movil.escala-gas .osm{font-size:18px;padding:4px 10px;}
 .movil.escala-gas .ficha-donde{position:relative;left:auto;top:auto;transform:none;width:auto;margin:20px 0 0;border-radius:26px;}
 .movil.escala-gas .ficha-donde .cuerpo{padding:32px 34px 36px;}
@@ -227,7 +228,7 @@ html,body{width:100%;background:#faf6f1;font-family:'Josefin Sans',sans-serif;-w
 .movil.escala-gas .tr-c .d{font-size:24px;}
 .movil.escala-gas .tr-c .d b{font-size:30px;}
 .movil.escala-gas .tr-c .ver{font-size:18px;margin-top:8px;}
-@media (prefers-reduced-motion:reduce){.plano .pulso{animation:none;opacity:.35}}
+@media (prefers-reduced-motion:reduce){.plano .pulso{animation:none;opacity:.35}.plano .chip{transition:none}}
 /* ═══════════ FIN DÓNDE ESTAMOS ═══════════ */
 </style>
 </head>
@@ -487,27 +488,74 @@ document.querySelectorAll('img[data-fachada="1"]').forEach(function(i){ i.src = 
   });
 
   // Marcas de tamaño constante en pantalla (se reescalan con 1/escala)
-  var marcas = [];
-  // lados: [escritorio, móvil]; "der"/"izq" a los lados, "arr"/"aba" centrado encima o debajo
-  function chip(g, lados, l1, l2, dyEsc){
+  var marcas = [], chips = [], VB = {x:0, y:0};
+  // Cada etiqueta tiene un lado preferido [escritorio, móvil], pero se coloca en el hueco
+  // que no tape rutas visibles, otras marcas, otras etiquetas, la ficha ni el borde del plano.
+  function chip(g, lados, l1, l2, ancla){
     var c = el("g", {"class":"chip"}, g), r = el("rect", {rx:10, ry:10}, c);
     var t1 = el("text", {}, c); t1.textContent = l1;
     var t2 = el("text", {"class":"t2"}, c); t2.textContent = l2;
-    c._ajusta = function(){
-      var movil = document.body.classList.contains("movil"), lado = lados[movil ? 1 : 0];
+    c._marca = g; c._lados = lados; c._ancla = ancla || [-16, -16, 32, 32];
+    c._mide = function(){
       var w = Math.max(t1.getComputedTextLength(), t2.getComputedTextLength()) + 24;
       var fs = parseFloat(getComputedStyle(t1).fontSize) || 13, h = fs * 2 + 20;
-      var x, y;
-      if(lado === "izq"){ x = -(w + 22); y = -h/2; }
-      else if(lado === "der"){ x = 22; y = -h/2; }
-      else if(lado === "arr"){ x = -w/2; y = -(h + 24); }
-      else { x = -w/2; y = 22; }
-      c.setAttribute("transform", "translate(0," + ((!movil && dyEsc) ? dyEsc : 0) + ")");
-      r.setAttribute("x", x); r.setAttribute("y", y); r.setAttribute("width", w); r.setAttribute("height", h);
-      t1.setAttribute("x", x + 12); t1.setAttribute("y", y + 10 + fs * .85);
-      t2.setAttribute("x", x + 12); t2.setAttribute("y", y + 14 + fs * 1.85);
+      r.setAttribute("x", 0); r.setAttribute("y", 0); r.setAttribute("width", w); r.setAttribute("height", h);
+      t1.setAttribute("x", 12); t1.setAttribute("y", 10 + fs * .85);
+      t2.setAttribute("x", 12); t2.setAttribute("y", 14 + fs * 1.85);
+      c._w = w; c._h = h;
     };
+    c._pon = function(x, y){ c.style.transform = "translate(" + x + "px," + y + "px)"; };
+    chips.push(c);
     return c;
+  }
+  function candidatos(c){
+    var a = c._ancla, w = c._w, h = c._h, gap = 8;
+    var L = a[0], R = a[0] + a[2], T = a[1], B = a[1] + a[3], cx = L + a[2] / 2, cy = T + a[3] / 2;
+    // Cuatro lados, con la etiqueta centrada o desplazada a lo largo de cada lado, y cuatro esquinas
+    return {der:[R + gap, cy - h/2], izq:[L - gap - w, cy - h/2], arr:[cx - w/2, T - gap - h], aba:[cx - w/2, B + gap],
+            "der-sube":[R + gap, B - h], "der-baja":[R + gap, T], "izq-sube":[L - gap - w, B - h], "izq-baja":[L - gap - w, T],
+            "arr-der2":[L, T - gap - h], "arr-izq2":[R - w, T - gap - h], "aba-der2":[L, B + gap], "aba-izq2":[R - w, B + gap],
+            "arr-der":[R, T - h], "arr-izq":[L - w, T - h], "aba-der":[R, B], "aba-izq":[L - w, B]};
+  }
+  function solape(a, b){
+    var w = Math.min(a[0] + a[2], b[0] + b[2]) - Math.max(a[0], b[0]), h = Math.min(a[1] + a[3], b[1] + b[3]) - Math.max(a[1], b[1]);
+    return (w > 0 && h > 0) ? w * h : 0;
+  }
+  function visible(g){ var capa = g.parentNode; return !capa.classList.contains("capa") || capa.classList.contains("on"); }
+  function colocaChips(){
+    var W = wrap.clientWidth, H = wrap.clientHeight, movil = document.body.classList.contains("movil");
+    var k = document.body.classList.contains("escala-gas") ? 2 : 1, wr = wrap.getBoundingClientRect();
+    function aPx(x, y){ return [(x - VB.x) * escala, (y - VB.y) * escala]; }
+    var obst = [], puntos = [];
+    marcas.forEach(function(g){
+      if(!visible(g)) return;
+      var P = aPx(g._p[0], g._p[1]), c = g.querySelector(".chip"), a = c ? c._ancla : [-16, -16, 32, 32];
+      obst.push({r:[P[0] + a[0] * k, P[1] + a[1] * k, a[2] * k, a[3] * k], g:g});
+    });
+    var ficha = document.querySelector(".ficha-donde");
+    if(ficha && getComputedStyle(ficha).position === "absolute"){ var fr = ficha.getBoundingClientRect(); obst.push({r:[fr.left - wr.left - 8, fr.top - wr.top - 8, fr.width + 16, fr.height + 16]}); }
+    var osm = wrap.querySelector(".osm");
+    if(osm){ var or = osm.getBoundingClientRect(); obst.push({r:[or.left - wr.left, or.top - wr.top, or.width, or.height]}); }
+    svg.querySelectorAll(".capa.on .ruta").forEach(function(ruta){
+      var L = ruta.getTotalLength(), paso = 5 / escala;
+      for(var d = 0; d <= L; d += paso){ var q = ruta.getPointAtLength(d); puntos.push(aPx(q.x, q.y)); }
+    });
+    var orden = ["der", "izq", "arr", "aba", "der-sube", "der-baja", "izq-sube", "izq-baja", "arr-der2", "arr-izq2", "aba-der2", "aba-izq2", "arr-der", "arr-izq", "aba-der", "aba-izq"];
+    chips.filter(function(c){ return visible(c._marca); }).forEach(function(c){
+      c._mide();
+      var g = c._marca, P = aPx(g._p[0], g._p[1]), cand = candidatos(c), pref = c._lados[movil ? 1 : 0];
+      var lista = [pref].concat(orden.filter(function(o){ return o !== pref; })), mejor = null;
+      lista.forEach(function(lado, i){
+        var x = cand[lado][0], y = cand[lado][1], rc = [P[0] + x * k, P[1] + y * k, c._w * k, c._h * k];
+        var coste = i * 2, m = 5;
+        puntos.forEach(function(p){ if(p[0] > rc[0] - m && p[0] < rc[0] + rc[2] + m && p[1] > rc[1] - m && p[1] < rc[1] + rc[3] + m) coste += 150; });
+        obst.forEach(function(o){ if(o.g !== g) coste += solape(rc, o.r) * 0.6; });
+        coste += (rc[2] * rc[3] - solape(rc, [4, 4, W - 8, H - 8])) * 3;
+        if(!mejor || coste < mejor.coste) mejor = {coste:coste, x:x, y:y, r:rc};
+      });
+      c._pon(mejor.x, mejor.y);
+      obst.push({r:mejor.r});
+    });
   }
   function marca(padre, p, dibuja){ var g = el("g", {}, padre); g._p = p; dibuja(g); marcas.push(g); return g; }
   var ICO_TREN = "M-6 -7h12a3 3 0 0 1 3 3v8a3 3 0 0 1-3 3h-12a3 3 0 0 1-3-3v-8a3 3 0 0 1 3-3zM-9 -1h18M-4 7l-2 3M4 7l2 3";
@@ -518,7 +566,7 @@ document.querySelectorAll('img[data-fachada="1"]').forEach(function(i){ i.src = 
     el("circle", {r:15, fill:"#c8a050", "class":"pulso"}, g);
     el("circle", {r:15, fill:"#7b1e2b", stroke:"#fff", "stroke-width":3}, g);
     el("path", {d:ICO_TREN, fill:"none", stroke:"#fff", "stroke-width":1.8, "stroke-linecap":"round", "stroke-linejoin":"round", transform:"scale(.8)"}, g);
-    chip(g, ["izq","arr"], "Metro Matiko · acceso", MIN.metro + " min andando");
+    chip(g, ["izq","arr"], "Metro Matiko · acceso", MIN.metro + " min andando", [-17, -17, 34, 34]);
   });
   [["matiko1", "#c8a050", ["arr","arr"], "Matiko 1", "28 · 72  ·  " + MIN.a + " min"],
    ["tiboli12", "#b54b5d", ["izq","aba"], "Tiboli 12", "22 · 28 · 72  ·  " + MIN.b + " min"]].forEach(function(d){
@@ -526,13 +574,13 @@ document.querySelectorAll('img[data-fachada="1"]').forEach(function(i){ i.src = 
       el("circle", {r:14, fill:d[1], "class":"pulso"}, g);
       el("circle", {r:14, fill:d[1], stroke:"#fff", "stroke-width":3}, g);
       el("path", {d:ICO_BUS, fill:"none", stroke:"#fff", "stroke-width":1.8, "stroke-linecap":"round", "stroke-linejoin":"round", transform:"scale(.75)"}, g);
-      chip(g, d[2], d[3], d[4]);
+      chip(g, d[2], d[3], d[4], [-16, -16, 32, 32]);
     });
   });
   marca(cap, PT.txoko, function(g){
     el("path", {d:"M0 0C0 0-17-17-17-29.4-17-38.6-9.4-46 0-46S17-38.6 17-29.4C17-17 0 0 0 0z", fill:"#7b1e2b", stroke:"#fff", "stroke-width":2}, g);
     el("circle", {cx:0, cy:-29.5, r:6, fill:"#fff"}, g);
-    chip(g, ["der","aba"], "Txoko Nerbitarte", "Muros de San Pedro, 2", -29);
+    chip(g, ["der","der"], "Txoko Nerbitarte", "Muros de San Pedro, 2", [-18, -47, 36, 48]);
   });
 
   // Encuadre: todos los puntos visibles en la zona libre (a la derecha de la ficha en escritorio)
@@ -546,7 +594,8 @@ document.querySelectorAll('img[data-fachada="1"]').forEach(function(i){ i.src = 
     var y0 = Math.min.apply(null, pts.map(function(p){return p[1];})), y1 = Math.max.apply(null, pts.map(function(p){return p[1];}));
     var movil = document.body.classList.contains("movil");
     var gas = escalaPlano();
-    var pad = movil ? (gas ? {l:70, r:70, t:190, b:200} : {l:36, r:36, t:100, b:105}) : {l:30, r:210, t:80, b:50};
+    // En móvil se deja sitio a la derecha: el txoko es el punto más oriental y su etiqueta va a ese lado
+    var pad = movil ? (gas ? {l:60, r:390, t:190, b:200} : {l:30, r:185, t:95, b:100}) : {l:30, r:210, t:80, b:50};
     var fw = W - libreX - pad.l - pad.r, fh = H - pad.t - pad.b;
     escala = Math.max(0.4, Math.min(fw / (x1 - x0), fh / (y1 - y0), movil ? (gas ? 3.4 : 1.7) : 2.5));
     var cxPx = libreX + pad.l + fw / 2, cyPx = pad.t + fh / 2;
@@ -556,12 +605,14 @@ document.querySelectorAll('img[data-fachada="1"]').forEach(function(i){ i.src = 
     if(vh <= DATOS.y1 - DATOS.y0) vy = Math.min(Math.max(vy, DATOS.y0), DATOS.y1 - vh);
     if(vx + vw > DATOS.x1) vx = DATOS.x1 - vw;
     svg.setAttribute("viewBox", [vx, vy, vw, vh].join(" "));
+    VB.x = vx; VB.y = vy;
     var u = 1 / escala, k = document.body.classList.contains("escala-gas") ? 2 : 1;
     svg.querySelector(".etq").style.fontSize = (12 * k * u) + "px";
     svg.querySelector(".etq").style.strokeWidth = (3 * u) + "px";
     svg.querySelectorAll(".ruta").forEach(function(r){ r.style.strokeWidth = (5 * k * u) + "px"; r.style.strokeDasharray = (0.01 * u) + " " + (11 * k * u); });
     svg.querySelectorAll(".halo").forEach(function(r){ r.style.strokeWidth = (10 * k * u) + "px"; });
-    marcas.forEach(function(g){ g.setAttribute("transform", "translate(" + g._p[0] + " " + g._p[1] + ") scale(" + (u * k) + ")"); g.querySelectorAll(".chip").forEach(function(c){ c._ajusta(); }); });
+    marcas.forEach(function(g){ g.setAttribute("transform", "translate(" + g._p[0] + " " + g._p[1] + ") scale(" + (u * k) + ")"); });
+    colocaChips();
   }
 
   // Puntos que avanzan hacia el txoko (sentido de la marcha)
@@ -583,6 +634,9 @@ document.querySelectorAll('img[data-fachada="1"]').forEach(function(i){ i.src = 
       if(activar){
         b.setAttribute("aria-pressed", "true");
         (b.dataset.capa === "metro" ? cMetro : cBus).classList.add("on");
+      }
+      colocaChips();
+      if(activar){
         if(window.innerWidth < 900) wrap.scrollIntoView({behavior: reduce ? "auto" : "smooth", block:"center"});
       }
     });
